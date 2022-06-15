@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import TimeLeft from './TimeLeft'
+import TimeLeft from './components/TimeLeft'
+import { Center, Button, VStack } from '@chakra-ui/react'
+import { ChakraProvider } from '@chakra-ui/react'
 
 function App() {
   const [timerRunning, setTimerRunning] = useState(false)
@@ -8,9 +10,8 @@ function App() {
     setTimerRunning(true)
   }
 
-  const setCountdownDate = () => {
-    const now = new Date()
-    return now.setMinutes(now.getMinutes() + 1)
+  const stopTimer = () => {
+    setTimerRunning(false)
   }
 
   const handleTimerDone = () => {
@@ -18,14 +19,19 @@ function App() {
   }
 
   return (
-    <div>
-      { !timerRunning && (
-        <button onClick={startTimer}>Start timer</button>
-      )}
-      { timerRunning && (
-        <TimeLeft countdownDate={setCountdownDate()} onTimerDone={handleTimerDone} />
-      )}
-    </div>
+    <ChakraProvider>
+      <Center bg="gray.300" h={'100vh'}>
+        { !timerRunning && (
+          <Button colorScheme="blue" onClick={startTimer}>Start timer</Button>
+        )}
+        { timerRunning && (
+          <VStack>
+            <TimeLeft countdownSeconds={10} onTimerDone={handleTimerDone} />
+            <Button size="xs" colorScheme="red" variant="ghost" onClick={stopTimer}>abort timer</Button>
+          </VStack>
+        )}
+      </Center>
+    </ChakraProvider>
   );
 }
 
