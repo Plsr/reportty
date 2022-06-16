@@ -36,6 +36,7 @@ function App() {
   const handleTimerDone = () => {
     setTimerRunning(false)
     setIntervalType(nextIntervalType())
+    new Notification('done', { body: 'you are done' })
   }
 
   return (
