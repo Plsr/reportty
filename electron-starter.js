@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron')
+const { app, BrowserWindow, ipcMain, Notification } = require('electron')
 const path = require('path')
 
 function createWindow () {
@@ -26,6 +26,15 @@ function createWindow () {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   createWindow()
+
+  ipcMain.on('send-notification', (_event, { title, body, actions }) => {
+    // NOTE: Actions are not supported at this stage of the app.
+    // App needs to be:
+    // - Signed
+    // - NSUserNotificationAlertStyle set to alert in the Info.plist
+    // see https://www.electronjs.org/docs/latest/api/structures/notification-action#button-support-on-macos
+    new Notification({ title, body }).show()
+  })
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the

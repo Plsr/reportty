@@ -2,18 +2,21 @@ import { useState } from 'react'
 import TimeLeft from './components/TimeLeft'
 import { Center, Button, VStack } from '@chakra-ui/react'
 import { ChakraProvider } from '@chakra-ui/react'
+import { INTERVAL_STATES } from './util/intervalTypes'
+import useNotification from './hooks/useNotificaion'
 
 const WORK_INTERVAL_LENGTH_SEC = 10
 const BREAK_LENGTH_SEC = 5
 
-const INTERVAL_STATES = {
-  work: 'work',
-  break: 'break'
-}
-
 function App() {
   const [timerRunning, setTimerRunning] = useState(false)
   const [intervalType, setIntervalType] = useState(INTERVAL_STATES.work)
+  const handleNotificationClick = () => {
+    console.log("Handling the thing")
+  }
+
+  const [intervalOverNotification] = useNotification(handleNotificationClick)
+
 
   const startTimer = () => {
     setTimerRunning(true)
@@ -28,15 +31,18 @@ function App() {
     return intervalType === INTERVAL_STATES.work ? INTERVAL_STATES.break : INTERVAL_STATES.work
   }
 
-  const intervalLenght = () => {
-    return intervalType === INTERVAL_STATES.work ? WORK_INTERVAL_LENGTH_SEC : BREAK_LENGTH_SEC
+  const intervalLenght = (interval = intervalType) => {
+    return interval === INTERVAL_STATES.work ? WORK_INTERVAL_LENGTH_SEC : BREAK_LENGTH_SEC
   }
 
 
   const handleTimerDone = () => {
     setTimerRunning(false)
+    intervalOverNotification({
+      intervalType: intervalType,
+      nextIntervalDuration: intervalLenght(nextIntervalType())
+    })
     setIntervalType(nextIntervalType())
-    new Notification('done', { body: 'you are done' })
   }
 
   return (
