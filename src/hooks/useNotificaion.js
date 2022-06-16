@@ -8,7 +8,6 @@ export default function useNotification(onNotificationClick) {
   }, [])
 
   function notifyUser({ title, body, actions }) {
-    // TODO: Use ipc message here to trigger notificaiton in main process
     window.electronApi.sendNotification({ title, body, actions })
   }
 
