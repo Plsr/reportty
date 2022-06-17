@@ -1,63 +1,23 @@
-import { useState } from 'react'
-import TimeLeft from './components/TimeLeft'
-import { Center, Button, VStack } from '@chakra-ui/react'
-import { ChakraProvider } from '@chakra-ui/react'
-import { INTERVAL_STATES } from './util/intervalTypes'
-import useNotification from './hooks/useNotificaion'
-
-const WORK_INTERVAL_LENGTH_SEC = 10
-const BREAK_LENGTH_SEC = 5
+import Main from './pages/Main'
+import Settings from './pages/Settings'
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+} from "react-router-dom";
+import { ChakraProvider, Box } from '@chakra-ui/react'
 
 function App() {
-  const [timerRunning, setTimerRunning] = useState(false)
-  const [intervalType, setIntervalType] = useState(INTERVAL_STATES.work)
-  const handleNotificationClick = () => {
-    console.log("Handling the thing")
-  }
-
-  const [intervalOverNotification] = useNotification(handleNotificationClick)
-
-
-  const startTimer = () => {
-    setTimerRunning(true)
-  }
-
-  const stopTimer = () => {
-    setTimerRunning(false)
-    setIntervalType(nextIntervalType())
-  }
-
-  const nextIntervalType = () => {
-    return intervalType === INTERVAL_STATES.work ? INTERVAL_STATES.break : INTERVAL_STATES.work
-  }
-
-  const intervalLenght = (interval = intervalType) => {
-    return interval === INTERVAL_STATES.work ? WORK_INTERVAL_LENGTH_SEC : BREAK_LENGTH_SEC
-  }
-
-
-  const handleTimerDone = () => {
-    setTimerRunning(false)
-    intervalOverNotification({
-      intervalType: intervalType,
-      nextIntervalDuration: intervalLenght(nextIntervalType())
-    })
-    setIntervalType(nextIntervalType())
-  }
-
   return (
     <ChakraProvider>
-      <Center bg="gray.300" h={'100vh'}>
-        { !timerRunning && (
-          <Button colorScheme="blue" onClick={startTimer}>Start timer</Button>
-        )}
-        { timerRunning && (
-          <VStack>
-            <TimeLeft countdownSeconds={intervalLenght()} onTimerDone={handleTimerDone} />
-            <Button size="xs" colorScheme="red" variant="ghost" onClick={stopTimer}>abort timer</Button>
-          </VStack>
-        )}
-      </Center>
+      <Box bg="gray.300" h='100%'>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Main />}></Route>
+            <Route path="/settings" element={<Settings />}></Route>
+          </Routes>
+        </BrowserRouter>
+      </Box>
     </ChakraProvider>
   );
 }
