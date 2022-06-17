@@ -45,7 +45,7 @@ export default function Main() {
   }
 
   return (
-    <Flex direction="column" h="100%" p={4}>
+    <Flex direction="column" h="100%">
       <Box ml="auto">
         <Link to='/settings'> <SettingsIcon w="6" h="6" /></Link>
       </Box>

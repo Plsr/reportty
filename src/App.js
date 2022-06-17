@@ -10,7 +10,7 @@ import { ChakraProvider, Box } from '@chakra-ui/react'
 function App() {
   return (
     <ChakraProvider>
-      <Box bg="gray.300" h='100%'>
+      <Box bg="gray.300" h='100%' p={4}>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Main />}></Route>
