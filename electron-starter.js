@@ -2,6 +2,7 @@
 const { app, BrowserWindow, ipcMain, Notification } = require('electron')
 const path = require('path')
 const url = require('node:url');
+const Store = require('electron-store');
 
 function createWindow () {
   // Create the browser window.
@@ -35,6 +36,22 @@ function createWindow () {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   createWindow()
+  const store = new Store()
+
+  ipcMain.handle('get-store-value', async (_event, key) => {
+    console.log('getting')
+    console.log(store.get(key))
+    return await store.get(key)
+  })
+
+  ipcMain.on('set-store-value', (_event, key, value) => {
+    console.log('setting', key, value)
+    store.set(key, value)
+  })
+
+  ipcMain.on('clear-store', (_event) => {
+    store.clear()
+  })
 
   ipcMain.on('send-notification', (_event, { title, body, actions }) => {
     // NOTE: Actions are not supported at this stage of the app.
