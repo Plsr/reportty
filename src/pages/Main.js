@@ -1,17 +1,16 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import TimeLeft from '../components/TimeLeft'
 import { Center, Button, VStack, Flex, Box, Text } from '@chakra-ui/react'
 import { INTERVAL_STATES } from '../util/intervalTypes'
 import useNotification from '../hooks/useNotificaion'
 import { Link } from "react-router-dom";
 import { SettingsIcon } from '@chakra-ui/icons';
-
-const WORK_INTERVAL_LENGTH_SEC = 10
-const BREAK_LENGTH_SEC = 5
+import { StoreContext } from '../contexts/storeContext'
 
 export default function Main() {
   const [timerRunning, setTimerRunning] = useState(false)
   const [intervalType, setIntervalType] = useState(INTERVAL_STATES.work)
+  const [storeData, _setStoreData] = useContext(StoreContext)
   const handleNotificationClick = () => {
     console.log("Handling the thing")
   }
@@ -32,7 +31,7 @@ export default function Main() {
   }
 
   const intervalLenght = (interval = intervalType) => {
-    return interval === INTERVAL_STATES.work ? WORK_INTERVAL_LENGTH_SEC : BREAK_LENGTH_SEC
+    return interval === INTERVAL_STATES.work ? storeData.workTime * 60 : storeData.breakTime * 60
   }
 
   const handleTimerDone = () => {
@@ -43,6 +42,8 @@ export default function Main() {
     })
     setIntervalType(nextIntervalType())
   }
+
+  if (!storeData) return <div>...Loading</div>
 
   return (
     <Flex direction="column" h="100%">

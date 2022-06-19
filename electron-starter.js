@@ -3,6 +3,7 @@ const { app, BrowserWindow, ipcMain, Notification } = require('electron')
 const path = require('path')
 const url = require('node:url');
 const Store = require('electron-store');
+const storeSchema = require('./storeSchema.js')
 
 function createWindow () {
   // Create the browser window.
@@ -36,11 +37,9 @@ function createWindow () {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   createWindow()
-  const store = new Store()
+  const store = new Store({ schema: storeSchema })
 
   ipcMain.handle('get-store-value', async (_event, key) => {
-    console.log('getting')
-    console.log(store.get(key))
     return await store.get(key)
   })
 

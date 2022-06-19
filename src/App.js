@@ -6,19 +6,23 @@ import {
   Route,
 } from "react-router-dom";
 import { ChakraProvider, Box } from '@chakra-ui/react'
+import { StoreProvider } from './contexts/storeContext'
 
 function App() {
+
   return (
-    <ChakraProvider>
-      <Box bg="gray.300" h='100%' p={4}>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Main />}></Route>
-            <Route path="/settings" element={<Settings />}></Route>
-          </Routes>
-        </BrowserRouter>
-      </Box>
-    </ChakraProvider>
+    <StoreProvider>
+      <ChakraProvider>
+        <Box bg="gray.300" h='100%' p={4}>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Main />}></Route>
+              <Route path="/settings" element={<Settings />}></Route>
+            </Routes>
+          </BrowserRouter>
+        </Box>
+      </ChakraProvider>
+    </StoreProvider>
   );
 }
 
