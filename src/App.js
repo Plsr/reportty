@@ -13,7 +13,7 @@ function App() {
   return (
     <StoreProvider>
       <ChakraProvider>
-        <Box bg="gray.300" h='100%' p={4}>
+        <Box bg="gray.300" h='100%' p={4} style={{ fontVariantNumeric: 'tabular-nums' }}>
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Main />}></Route>

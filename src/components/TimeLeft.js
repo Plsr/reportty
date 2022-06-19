@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Text } from '@chakra-ui/react'
+import { secondsToMinutes } from '../util/timeCalculations'
 
 export default function TimeLeft({ countdownSeconds, onTimerDone }) {
   const [timeLeft, setTimeLeft] = useState(countdownSeconds)
@@ -18,6 +19,6 @@ export default function TimeLeft({ countdownSeconds, onTimerDone }) {
   if (timeLeft <= 0) return null
 
   return (
-    <Text fontSize='5xl'>{ timeLeft }</Text>
+    <Text fontSize='5xl'>{ secondsToMinutes(timeLeft) }</Text>
   )
 }

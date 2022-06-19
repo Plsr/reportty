@@ -6,6 +6,7 @@ import useNotification from '../hooks/useNotificaion'
 import { Link } from "react-router-dom";
 import { SettingsIcon } from '@chakra-ui/icons';
 import { StoreContext } from '../contexts/storeContext'
+import { secondsToMinutes } from '../util/timeCalculations'
 
 export default function Main() {
   const [timerRunning, setTimerRunning] = useState(false)
@@ -53,7 +54,7 @@ export default function Main() {
       <Center bg="gray.300" h='100%'>
         { !timerRunning && (
           <VStack>
-            <Text fontSize='5xl'>{ intervalLenght(intervalType) }</Text>
+            <Text fontSize='5xl'>{ secondsToMinutes(intervalLenght(intervalType)) }</Text>
             <Button size="sm" colorScheme="blue" variant="outline" onClick={startTimer}>Start timer</Button>
           </VStack>
         )}
