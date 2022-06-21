@@ -8,14 +8,14 @@ import {
   Input
 } from '@chakra-ui/react'
 
-export default function TimeInputGroup({ value, onValueChange }) {
+export default function TimeInputGroup({ value, onValueChange, title }) {
   const handleValueChange = (value) => {
     onValueChange(value)
   }
 
   return (
     <>
-      <Text fontSize={'m'} fontWeight={'bold'} mb={4}>Work interval length</Text>
+      <Text fontSize={'m'} fontWeight={'bold'} mb={4}>{ title }</Text>
       <Box mb={2}>
         <Input
           display="inline-block"

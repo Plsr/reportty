@@ -44,8 +44,6 @@ export default function Main() {
     setIntervalType(nextIntervalType())
   }
 
-  if (!storeData) return <div>...Loading</div>
-
   return (
     <Flex direction="column" h="100%">
       <Box ml="auto">
