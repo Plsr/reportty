@@ -1,5 +1,6 @@
 import { INTERVAL_STATES } from '../util/intervalTypes'
 import { useEffect } from 'react'
+import { secondsToMinutes } from 'renderer/util/timeCalculations'
 
 export default function useNotification(onNotificationClick) {
   useEffect(() => {
@@ -13,11 +14,12 @@ export default function useNotification(onNotificationClick) {
 
 
   function notificationContent(intervalType, nextIntervalDuration) {
+    const duration = secondsToMinutes(nextIntervalDuration)
     switch(intervalType) {
       case INTERVAL_STATES.work:
-        return { title: 'Work interval done!', body: `Well done. Time for a ${nextIntervalDuration} Minute break` }
+        return { title: 'Work interval done!', body: `Well done. Time for a ${duration} Minute break` }
       case INTERVAL_STATES.break:
-        return { title: 'Break is over', body: `Back to work for a ${nextIntervalDuration} Minute interval` }
+        return { title: 'Break is over', body: `Back to work for a ${duration} Minute interval` }
       default:
         throw new Error("Invalid interval Type")
     }
