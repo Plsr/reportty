@@ -1,14 +1,14 @@
+<p align="center"><strong>Reportty ✅⏰</strong><p>
 <p align="center">
-  <h1>Reportty</h1>
-  <img style="max-width: 200px" src="https://github.com/assets/3950661/b83752e9-ff3d-4dec-aa74-4ac4555d5fd1" />
-  <p style="font-style: italic">A simple task tracker with a pomodoro timer.</p>
+  <img width="200px" src="https://github.com/assets/3950661/b83752e9-ff3d-4dec-aa74-4ac4555d5fd1" />
 </p>
+<p align="center"><i>A simple task tracker with a pomodoro timer.</i></p>
 
 ## Current State
 It is just a timer and it is only toggling between work sessions and short breaks. Thats it. For what it planned, see todos below.
 
-## How to use
-tbd
+## How to get
+Download the [latest release](https://github.com/Plsr/reportty/releases) on github. Only zip, no `.dmg` at this time. Sorry.
 
 ## Todos
 - [ ] Add long break every 4 work sessions
