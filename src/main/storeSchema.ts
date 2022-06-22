@@ -20,5 +20,18 @@ export const storeSchema = {
   autoStartNextInterval: {
     type: 'boolean',
     default: false
+  },
+  finishedTimers: {
+    type: 'object',
+    properties: {
+      currentDate: {
+        type: 'string'
+      },
+      finishedCount: {
+        type: 'number'
+      }
+    },
+    required: ['currentDate', 'finishedCount'],
+    default: { currentDate: new Date().toISOString(), finishedCount: 0 }
   }
 }

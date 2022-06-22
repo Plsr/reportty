@@ -11,7 +11,7 @@ import { secondsToMinutes } from '../util/timeCalculations'
 export default function Main() {
   const [timerRunning, setTimerRunning] = useState(false)
   const [intervalType, setIntervalType] = useState(INTERVAL_STATES.work)
-  const [storeData, _setStoreData] = useContext(StoreContext)
+  const [storeData, setStoreData] = useContext(StoreContext)
   const handleNotificationClick = () => {
     console.log("Handling the thing")
   }
@@ -28,11 +28,19 @@ export default function Main() {
   }
 
   const nextIntervalType = () => {
-    return intervalType === INTERVAL_STATES.work ? INTERVAL_STATES.break : INTERVAL_STATES.work
+    return intervalType === INTERVAL_STATES.work ? getBreakType() : INTERVAL_STATES.work
+  }
+
+  const getBreakType = () => {
+    return storeData.finishedTimers.finishedCount % 4 === 0 ? INTERVAL_STATES.longBreak : INTERVAL_STATES.break
   }
 
   const intervalLenght = (interval = intervalType) => {
-    return interval === INTERVAL_STATES.work ? storeData.workTime * 60 : storeData.breakTime * 60
+    return storeData[`${interval}Time`] 
+  }
+
+  const currentIsWorkInterval = () => {
+    return intervalType === INTERVAL_STATES.work
   }
 
   const handleTimerDone = () => {
@@ -41,7 +49,21 @@ export default function Main() {
       intervalType: intervalType,
       nextIntervalDuration: intervalLenght(nextIntervalType())
     })
+    if (currentIsWorkInterval()) {
+      updateFinishedTimersCount()
+    }
     setIntervalType(nextIntervalType())
+
+  }
+
+  updateFinishedTimersCount = () => {
+    const newFinishedCount = storeData.finishedTimers.finishedCount += 1
+    const newFinishedTimers = {
+      finishedCount: newFinishedCount,
+      date: new Date().toISOString()
+    }
+    setStoreData({...storeData, finishedTimers: newFinishedTimers})
+    window.electron.ipcRenderer.setStoreValue('finishedTimers.finishedCount', newFinishedCount)
   }
 
   return (

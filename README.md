@@ -11,9 +11,10 @@ It is just a timer and it is only toggling between work sessions and short break
 Download the [latest release](https://github.com/Plsr/reportty/releases) on github. Only zip, no `.dmg` at this time. Sorry.
 
 ## Todos
-- [ ] Add long break every 4 work sessions
+- [x] Add long break every 4 work sessions
 - [ ] Keep logs of sessions on a day
 - [ ] Allow adding tasks and associating them to timers
 - [ ] Display how many timers and how much actual time a task took
+- [ ] Keep track of next interval in store?
 
 Built with [electron-react-boilerplate](https://github.com/electron-react-boilerplate/electron-react-boilerplate).
