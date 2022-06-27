@@ -35,7 +35,7 @@ export const storeSchema = {
             duration: {
               type: 'number',
             },
-            taskNName: {
+            taskName: {
               type: 'string'
             }
           }

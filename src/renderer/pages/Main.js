@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from 'react'
 import TimeLeft from '../components/TimeLeft'
-import { Center, Button, VStack, Flex, Box, Text, Input } from '@chakra-ui/react'
+import { Center, Button, VStack, Flex, Box, Text, Input, HStack } from '@chakra-ui/react'
 import { INTERVAL_STATES } from '../util/intervalTypes'
 import useNotification from '../hooks/useNotificaion'
 import { Link } from "react-router-dom";
@@ -70,15 +70,29 @@ export default function Main() {
         currentDate: new Date().toISOString(),
         timers: [
           ...(storeData.finishedTimers.timers ? storeData.finishedTimers.timers : []), 
-          { duration: intervalLenght(), taskName: currentTaskName}
+          { duration: intervalLenght(), taskName: currentTaskName || 'no task added'}
         ],
       }
       updatedStore.finishedTimers = { ...newFinishedTimers }
       window.electron.ipcRenderer.setStoreValue('finishedTimers', newFinishedTimers)
     }
-    
+
     setStoreData({...storeData, ...updatedStore })
     window.electron.ipcRenderer.setStoreValue('lastIntervalType', updatedStore.lastIntervalType)
+  }
+
+  const finishedTimersByTaskName = () => {
+    if (storeData.finishedTimers.timers?.length < 1) return {}
+    const grouped = {}
+    storeData.finishedTimers.timers.forEach(timer => {
+      const presentData = grouped[timer.taskName]
+      grouped[timer.taskName] = {
+        totalTime: (presentData?.totalTime || 0) + timer.duration,
+        timers: (presentData?.timers || 0) + 1
+      }
+    })
+
+    return grouped
   }
 
   return (
@@ -102,8 +116,15 @@ export default function Main() {
             </VStack>
           )}
           { (storeData.finishedTimers?.timers?.length > 0) && (
-            <Text mt="6">{ storeData.finishedTimers.timers.length } Intervals finished today</Text>
+            <Text mt="8">{ storeData.finishedTimers.timers.length } Intervals finished today</Text>
           )}
+          {
+            Object.entries(finishedTimersByTaskName()).map(([taskName, data]) => (
+              <Box mb="4">
+                <HStack><Text>{taskName} — {data.timers} Timers ({data.totalTime} secs)</Text></HStack>
+              </Box>
+            ))
+          }
         </VStack>
       </Center>
     </Flex>
