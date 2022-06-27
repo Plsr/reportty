@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { SettingsIcon } from '@chakra-ui/icons';
 import { StoreContext } from '../contexts/storeContext'
 import { secondsToMinutes } from '../util/timeCalculations'
+import Reports from '../components/Reports'
 
 export default function Main() {
   const [timerRunning, setTimerRunning] = useState(false)
@@ -43,7 +44,7 @@ export default function Main() {
   }
 
   const intervalLenght = (interval = intervalType) => {
-    return storeData[`${interval}Time`]
+    return storeData[`${interval}Time`] * 60
   }
 
   const currentIsWorkInterval = () => {
@@ -81,20 +82,6 @@ export default function Main() {
     window.electron.ipcRenderer.setStoreValue('lastIntervalType', updatedStore.lastIntervalType)
   }
 
-  const finishedTimersByTaskName = () => {
-    if (storeData.finishedTimers.timers?.length < 1) return {}
-    const grouped = {}
-    storeData.finishedTimers.timers.forEach(timer => {
-      const presentData = grouped[timer.taskName]
-      grouped[timer.taskName] = {
-        totalTime: (presentData?.totalTime || 0) + timer.duration,
-        timers: (presentData?.timers || 0) + 1
-      }
-    })
-
-    return grouped
-  }
-
   return (
     <Flex direction="column" h="100%">
       <Box ml="auto">
@@ -116,15 +103,8 @@ export default function Main() {
             </VStack>
           )}
           { (storeData.finishedTimers?.timers?.length > 0) && (
-            <Text mt="8">{ storeData.finishedTimers.timers.length } Intervals finished today</Text>
+            <Reports finishedTimers={storeData.finishedTimers.timers} />
           )}
-          {
-            Object.entries(finishedTimersByTaskName()).map(([taskName, data]) => (
-              <Box mb="4">
-                <HStack><Text>{taskName} — {data.timers} Timers ({data.totalTime} secs)</Text></HStack>
-              </Box>
-            ))
-          }
         </VStack>
       </Center>
     </Flex>
