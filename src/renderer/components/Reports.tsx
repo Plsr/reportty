@@ -8,7 +8,7 @@ export default function Reports({ finishedTimers }: ReportsProps) {
     finishedTimers.forEach(timer => {
       const currentTaskName = timer.taskName
       const presentData = finishedTasksMetadata[currentTaskName]
-      
+
       finishedTasksMetadata[currentTaskName] = {
         totalTime: (presentData?.totalTime || 0) + timer.duration,
         timersCount: (presentData?.timersCount || 0) + 1
@@ -24,7 +24,7 @@ export default function Reports({ finishedTimers }: ReportsProps) {
       {
         Object.entries(finishedTimersByTaskName()).map(([taskName, data]) => (
           <Box mb="4">
-            <HStack><Text>{taskName} — {data.timersCount} Timers ({data.totalTime} secs)</Text></HStack>
+            <HStack><Text>{taskName} — {data.timersCount} Intervals ({data.totalTime} secs)</Text></HStack>
           </Box>
         ))
       }
