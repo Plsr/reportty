@@ -3,5 +3,6 @@ export const storeKeys = [
   'longBreakTime',
   'workTime',
   'autoStartNextInterval',
-  'finishedTimers'
+  'finishedTimers',
+  'lastIntervalType'
 ]

@@ -20,6 +20,8 @@ export default function useNotification(onNotificationClick) {
         return { title: 'Work interval done!', body: `Well done. Time for a ${duration} Minute break` }
       case INTERVAL_STATES.break:
         return { title: 'Break is over', body: `Back to work for a ${duration} Minute interval` }
+      case INTERVAL_STATES.longBreak:
+        return { title: 'Break is over', body: `Back to work for a ${duration} Minute interval` }
       default:
         throw new Error("Invalid interval Type")
     }

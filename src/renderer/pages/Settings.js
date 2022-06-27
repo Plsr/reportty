@@ -6,7 +6,7 @@ import { StoreContext } from '../contexts/storeContext'
 import { useContext } from 'react'
 
 export default function Settings() {
-  const [_storeData, setStoreData] = useContext(StoreContext)
+  const [storeData, setStoreData] = useContext(StoreContext)
 
   const storeSetTest = async () => {
     console.log(await window.electron.ipcRenderer.getStoreValue('foo'))
@@ -16,7 +16,7 @@ export default function Settings() {
 
   // TODO: Handle case if store write fails (needs to be added to method in preload.js)
   const handleFormSave = async ({ workTime, breakTime, longBreakTime }) => {
-    setStoreData({ workTime, breakTime, longBreakTime })
+    setStoreData({ ...storeData, workTime, breakTime, longBreakTime })
     const storeWorkTime = window.electron.ipcRenderer.setStoreValue('workTime', workTime)
     const storeBreakTime = window.electron.ipcRenderer.setStoreValue('breakTime', breakTime)
     const storeLongBreakTime = window.electron.ipcRenderer.setStoreValue('longBreakTime', longBreakTime)

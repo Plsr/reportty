@@ -1,6 +1,6 @@
-import { useState, useContext } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import TimeLeft from '../components/TimeLeft'
-import { Center, Button, VStack, Flex, Box, Text } from '@chakra-ui/react'
+import { Center, Button, VStack, Flex, Box, Text, Input } from '@chakra-ui/react'
 import { INTERVAL_STATES } from '../util/intervalTypes'
 import useNotification from '../hooks/useNotificaion'
 import { Link } from "react-router-dom";
@@ -11,7 +11,14 @@ import { secondsToMinutes } from '../util/timeCalculations'
 export default function Main() {
   const [timerRunning, setTimerRunning] = useState(false)
   const [intervalType, setIntervalType] = useState(INTERVAL_STATES.work)
+  const [currentTaskName, setCurrentTaskName] = useState('')
   const [storeData, setStoreData] = useContext(StoreContext)
+
+  useEffect(() => {
+    setIntervalType(nextIntervalType(storeData.lastIntervalType))
+  }, [storeData])
+
+  // TODO: For later
   const handleNotificationClick = () => {
     console.log("Handling the thing")
   }
@@ -27,16 +34,16 @@ export default function Main() {
     setIntervalType(nextIntervalType())
   }
 
-  const nextIntervalType = () => {
-    return intervalType === INTERVAL_STATES.work ? getBreakType() : INTERVAL_STATES.work
+  const nextIntervalType = (lastIntervalType) => {
+    return lastIntervalType === INTERVAL_STATES.work ? getBreakType() : INTERVAL_STATES.work
   }
 
   const getBreakType = () => {
-    return storeData.finishedTimers.finishedCount % 4 === 0 ? INTERVAL_STATES.longBreak : INTERVAL_STATES.break
+    return storeData.finishedTimers.timers?.length % 4 === 0 ? INTERVAL_STATES.longBreak : INTERVAL_STATES.break
   }
 
   const intervalLenght = (interval = intervalType) => {
-    return storeData[`${interval}Time`] 
+    return storeData[`${interval}Time`]
   }
 
   const currentIsWorkInterval = () => {
@@ -49,21 +56,29 @@ export default function Main() {
       intervalType: intervalType,
       nextIntervalDuration: intervalLenght(nextIntervalType())
     })
-    if (currentIsWorkInterval()) {
-      updateFinishedTimersCount()
-    }
-    setIntervalType(nextIntervalType())
-
+    updateFinishedTimersCount()
   }
 
   updateFinishedTimersCount = () => {
-    const newFinishedCount = storeData.finishedTimers.finishedCount += 1
-    const newFinishedTimers = {
-      finishedCount: newFinishedCount,
-      date: new Date().toISOString()
+    const updatedStore = {
+      lastIntervalType: intervalType
     }
-    setStoreData({...storeData, finishedTimers: newFinishedTimers})
-    window.electron.ipcRenderer.setStoreValue('finishedTimers.finishedCount', newFinishedCount)
+
+    if (currentIsWorkInterval()) {
+      const newFinishedCount = storeData.finishedTimers.finishedCount += 1
+      const newFinishedTimers = {
+        currentDate: new Date().toISOString(),
+        timers: [
+          ...(storeData.finishedTimers.timers ? storeData.finishedTimers.timers : []), 
+          { duration: intervalLenght(), taskName: currentTaskName}
+        ],
+      }
+      updatedStore.finishedTimers = { ...newFinishedTimers }
+      window.electron.ipcRenderer.setStoreValue('finishedTimers', newFinishedTimers)
+    }
+    
+    setStoreData({...storeData, ...updatedStore })
+    window.electron.ipcRenderer.setStoreValue('lastIntervalType', updatedStore.lastIntervalType)
   }
 
   return (
@@ -72,18 +87,24 @@ export default function Main() {
         <Link to='/settings'> <SettingsIcon w="6" h="6" /></Link>
       </Box>
       <Center bg="gray.300" h='100%'>
-        { !timerRunning && (
-          <VStack>
-            <Text fontSize='5xl'>{ secondsToMinutes(intervalLenght(intervalType)) }</Text>
-            <Button size="sm" colorScheme="blue" variant="outline" onClick={startTimer}>Start timer</Button>
-          </VStack>
-        )}
-        { timerRunning && (
-          <VStack>
-            <TimeLeft countdownSeconds={intervalLenght()} onTimerDone={handleTimerDone} />
-            <Button size="sm" colorScheme="red" variant="ghost" onClick={stopTimer}>abort timer</Button>
-          </VStack>
-        )}
+        <VStack>
+          { !timerRunning && (
+            <VStack>
+              <Text fontSize='5xl'>{ secondsToMinutes(intervalLenght(intervalType)) }</Text>
+              <Input value={currentTaskName} onChange={e => setCurrentTaskName(e.target.value)} placeholder="What are you working on?"></Input>
+              <Button size="sm" colorScheme="blue" variant="outline" onClick={startTimer}>Start timer</Button>
+            </VStack>
+          )}
+          { timerRunning && (
+            <VStack>
+              <TimeLeft countdownSeconds={intervalLenght()} onTimerDone={handleTimerDone} />
+              <Button size="sm" colorScheme="red" variant="ghost" onClick={stopTimer}>abort timer</Button>
+            </VStack>
+          )}
+          { (storeData.finishedTimers?.timers?.length > 0) && (
+            <Text mt="6">{ storeData.finishedTimers.timers.length } Intervals finished today</Text>
+          )}
+        </VStack>
       </Center>
     </Flex>
   );

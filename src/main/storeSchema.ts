@@ -27,11 +27,29 @@ export const storeSchema = {
       currentDate: {
         type: 'string'
       },
-      finishedCount: {
-        type: 'number'
+      timers: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            duration: {
+              type: 'number',
+            },
+            taskNName: {
+              type: 'string'
+            }
+          }
+        }
       }
     },
-    required: ['currentDate', 'finishedCount'],
-    default: { currentDate: new Date().toISOString(), finishedCount: 0 }
+    required: ['currentDate'],
+    default: {
+      currentDate: new Date().toISOString(), 
+      timers: []
+    }
+  },
+  lastIntervalType: {
+    type: 'string',
+    default: 'work'
   }
 }
