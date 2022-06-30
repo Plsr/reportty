@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from 'react'
 import TimeLeft from '../components/TimeLeft'
-import { Center, Button, VStack, Flex, Box, Text, Input, HStack } from '@chakra-ui/react'
+import { Center, Button, VStack, Flex, Box, Text, Input, HStack, Tag } from '@chakra-ui/react'
 import { INTERVAL_STATES } from '../util/intervalTypes'
 import useNotification from '../hooks/useNotificaion'
 import { Link } from "react-router-dom";
@@ -8,6 +8,7 @@ import { SettingsIcon } from '@chakra-ui/icons';
 import { StoreContext } from '../contexts/storeContext'
 import { secondsToMinutes } from '../util/timeCalculations'
 import Reports from '../components/Reports'
+import Card from '../components/Card'
 
 export default function Main() {
   const [timerRunning, setTimerRunning] = useState(false)
@@ -87,14 +88,17 @@ export default function Main() {
       <Box ml="auto">
         <Link to='/settings'> <SettingsIcon w="6" h="6" /></Link>
       </Box>
-      <Center bg="gray.300" h='100%'>
-        <VStack>
+      <Center h='100%'>
+        <VStack spacing={8}>
           { !timerRunning && (
-            <VStack>
-              <Text fontSize='5xl'>{ secondsToMinutes(intervalLenght(intervalType)) }</Text>
-              <Input value={currentTaskName} onChange={e => setCurrentTaskName(e.target.value)} placeholder="What are you working on?"></Input>
-              <Button size="sm" colorScheme="blue" variant="outline" onClick={startTimer}>Start timer</Button>
-            </VStack>
+            <Card spacious>
+              <VStack>
+                <Tag colorScheme="blue">{intervalType}</Tag>
+                <Text fontSize='5xl'>{ secondsToMinutes(intervalLenght(intervalType)) }</Text>
+                <Input value={currentTaskName} onChange={e => setCurrentTaskName(e.target.value)} placeholder="What are you working on?"></Input>
+                <Button size="sm" colorScheme="blue" variant="outline" onClick={startTimer}>Start timer</Button>
+              </VStack>
+            </Card>
           )}
           { timerRunning && (
             <VStack>

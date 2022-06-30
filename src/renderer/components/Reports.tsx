@@ -1,4 +1,6 @@
-import { Text, Box, HStack } from '@chakra-ui/react'
+import { Text, Box, VStack, Flex } from '@chakra-ui/react'
+import { TimeIcon, RepeatClockIcon } from '@chakra-ui/icons'
+import Card from './Card'
 
 export default function Reports({ finishedTimers }: ReportsProps) {
 
@@ -19,16 +21,24 @@ export default function Reports({ finishedTimers }: ReportsProps) {
   }
 
   return (
-    <>
-      <Text mt="8">{ finishedTimers.length } Intervals finished today</Text>
-      {
-        Object.entries(finishedTimersByTaskName()).map(([taskName, data]) => (
-          <Box mb="4">
-            <HStack><Text>{taskName} — {data.timersCount} Intervals ({data.totalTime} secs)</Text></HStack>
-          </Box>
-        ))
-      }
-    </>
+    <Box width='100%'>
+      <Text color="purple.700" fontSize="md" fontWeight={600}><RepeatClockIcon /> Finished Intervals ({ finishedTimers.length } total)</Text>
+      <Flex flexDirection="column" width="100%" mt={4}>
+        {
+          Object.entries(finishedTimersByTaskName()).map(([taskName, data]) => (
+            <Box mb={4} key={taskName}>
+              <Card>
+                <VStack spacing={0} alignItems="start">
+                  <Text fontSize="xs" color="gray.500"><TimeIcon /> {data.timersCount} ({data.totalTime} secs)</Text>
+                  <Text fontSize="md" fontWeight={600}>{ taskName }</Text>
+                </VStack>
+              </Card>
+            </Box>
+
+          ))
+        }
+      </Flex>
+    </Box>
   )
 }
 
