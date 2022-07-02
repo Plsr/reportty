@@ -111,7 +111,7 @@ const createWindow = async () => {
 
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line
-  new AppUpdater();
+  // new AppUpdater();
 };
 
 /**
@@ -161,5 +161,10 @@ app
       // dock icon is clicked and there are no other windows open.
       if (mainWindow === null) createWindow();
     });
+
+    app.on('did-become-active', () => {
+      mainWindow?.webContents.send('window-became-active')
+      console.log('App did become active')
+    })
   })
   .catch(console.log);

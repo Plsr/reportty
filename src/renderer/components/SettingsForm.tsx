@@ -1,27 +1,18 @@
 import { useContext, useState } from 'react'
-import {
-  Slider,
-  SliderTrack,
-  SliderFilledTrack,
-  SliderThumb,
-  Text,
-  Box,
-  Input,
-  Button
-} from '@chakra-ui/react'
+import { Box,Button } from '@chakra-ui/react'
 import { CheckIcon } from '@chakra-ui/icons'
 import TimeInputGroup from './TimeInputGroup'
 import { StoreContext } from 'renderer/contexts/storeContext'
 
-export default function SettingsForm({ onSave }) {
-  const [storeData, _setStoreData] = useContext(StoreContext)
+export default function SettingsForm({ onSave }: Props) {
+  const { storeData } = useContext(StoreContext)
   const [workTime, setWorkTime] = useState(storeData.workTime)
   const [breakTime, setBreakTime] = useState(storeData.breakTime)
   const [longBreakTime, setLongBreakTime] = useState(storeData.longBreakTime)
   const [showButtonSuccessState, setShowButtonSuccessState] = useState(false)
 
   const handleFormSave = () => {
-    onSave({ workTime, breakTime, longBreakTime})
+    onSave(workTime, breakTime, longBreakTime)
     setShowButtonSuccessState(true)
     setTimeout(() => {
       setShowButtonSuccessState(false)
@@ -49,4 +40,8 @@ export default function SettingsForm({ onSave }) {
       </Button>
     </Box>
   )
+}
+
+interface Props {
+  onSave(workTime: number, breakTime: number, longBreakTime: number): void
 }

@@ -2,18 +2,19 @@ import { INTERVAL_STATES } from '../util/intervalTypes'
 import { useEffect } from 'react'
 import { secondsToMinutes } from 'renderer/util/timeCalculations'
 
-export default function useNotification(onNotificationClick) {
+export default function useNotification(_onNotificationClick: Function) {
   useEffect(() => {
+    // TODO: Find out if still needed and implement properly
     // TODO: Remove eventlistener when no longer needed
-    document.addEventListener('notificationclick', onNotificationClick)
+    //document.addEventListener('notificationclick', onNotificationClick)
   }, [])
 
-  function notifyUser({ title, body, actions }) {
+  function notifyUser({ title, body, actions }: Electron.NotificationConstructorOptions) {
     window.electron.ipcRenderer.sendNotification({ title, body, actions })
   }
 
 
-  function notificationContent(intervalType, nextIntervalDuration) {
+  function notificationContent(intervalType: string, nextIntervalDuration: number) {
     const duration = secondsToMinutes(nextIntervalDuration)
     switch(intervalType) {
       case INTERVAL_STATES.work:
@@ -27,14 +28,17 @@ export default function useNotification(onNotificationClick) {
     }
   }
 
-  function intervalOverNotification({ intervalType, nextIntervalDuration, actions }) {
+  function intervalOverNotification({ intervalType, nextIntervalDuration, actions }: IntervalOverNotificationPayload) {
     const content = notificationContent(intervalType, nextIntervalDuration)
-    const _actions = [{
-      action: 'test',
-      title: 'Click here'
-    }]
-    notifyUser({ title: content.title, body: content.body, actions: _actions })
+    notifyUser({ title: content.title, body: content.body, actions: actions })
   }
 
   return [intervalOverNotification]
+}
+
+
+interface IntervalOverNotificationPayload {
+  intervalType: string,
+  nextIntervalDuration: number,
+  actions?: Electron.NotificationAction[]
 }

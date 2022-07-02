@@ -2,7 +2,7 @@ import { contextBridge, ipcRenderer } from 'electron';
 
 contextBridge.exposeInMainWorld('electron', {
   ipcRenderer: {
-    sendNotification: (data: NotificationPayload) => {
+    sendNotification: (data: Electron.NotificationConstructorOptions) => {
       const { title, body, actions } = data;
       ipcRenderer.send('send-notification', { title, body, actions })
     },
@@ -15,11 +15,8 @@ contextBridge.exposeInMainWorld('electron', {
     clearStore: () => {
       ipcRenderer.send('clear-store')
     },
+    onWindowBecameActive: (callback: Function) => {
+      ipcRenderer.on('window-became-active', callback as any)
+    }
   },
 });
-
-export type NotificationPayload = {
-  title: string,
-  body: string,
-  actions: any[] // TODO: define type
-}

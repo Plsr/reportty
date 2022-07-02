@@ -1,24 +1,33 @@
 import { useState, useContext, useEffect } from 'react'
 import TimeLeft from '../components/TimeLeft'
 import { Center, Button, VStack, Flex, Box, Text, Input, HStack, Tag } from '@chakra-ui/react'
-import { INTERVAL_STATES } from '../util/intervalTypes'
+import { INTERVAL_STATES, IntervalType } from '../util/intervalTypes'
 import useNotification from '../hooks/useNotificaion'
 import { Link } from "react-router-dom";
 import { SettingsIcon } from '@chakra-ui/icons';
 import { StoreContext } from '../contexts/storeContext'
 import { secondsToMinutes } from '../util/timeCalculations'
+import { FinishedTimer } from '../../main/storeSchema'
 import Reports from '../components/Reports'
 import Card from '../components/Card'
 
 export default function Main() {
   const [timerRunning, setTimerRunning] = useState(false)
-  const [intervalType, setIntervalType] = useState(INTERVAL_STATES.work)
+  const [intervalType, setIntervalType] = useState<IntervalType>(INTERVAL_STATES.work as IntervalType)
   const [currentTaskName, setCurrentTaskName] = useState('')
-  const [storeData, setStoreData] = useContext(StoreContext)
+  const { storeData, setStoreData } = useContext(StoreContext)
 
   useEffect(() => {
     setIntervalType(nextIntervalType(storeData.lastIntervalType))
   }, [storeData])
+
+  useEffect(() => {
+    window.electron.ipcRenderer.onWindowBecameActive((_event: Event) => {
+      // TODO: Update timer here
+      // Need to store the timer end date and recalculate once this fires
+      console.log("React knows window became active")
+    })
+  }, [])
 
   // TODO: For later
   const handleNotificationClick = () => {
@@ -36,20 +45,41 @@ export default function Main() {
     setIntervalType(nextIntervalType())
   }
 
-  const nextIntervalType = (lastIntervalType) => {
-    return lastIntervalType === INTERVAL_STATES.work ? getBreakType() : INTERVAL_STATES.work
+  const nextIntervalType = (lastIntervalType?: string): IntervalType => {
+    return (lastIntervalType === INTERVAL_STATES.work ? getBreakType() : INTERVAL_STATES.work) as IntervalType
   }
 
   const getBreakType = () => {
     return storeData.finishedTimers.timers?.length % 4 === 0 ? INTERVAL_STATES.longBreak : INTERVAL_STATES.break
   }
 
-  const intervalLenght = (interval = intervalType) => {
+  const intervalLenght = (interval: IntervalType = intervalType) => {
     return storeData[`${interval}Time`] * 60
   }
 
   const currentIsWorkInterval = () => {
     return intervalType === INTERVAL_STATES.work
+  }
+
+  const updateFinishedTimersCount = () => {
+    const updatedStore: UpdateStore = {
+      lastIntervalType: intervalType
+    }
+
+    if (currentIsWorkInterval()) {
+      const newFinishedTimers = {
+        currentDate: new Date().toISOString(),
+        timers: [
+          ...(storeData.finishedTimers.timers ? storeData.finishedTimers.timers : []), 
+          { duration: intervalLenght(), taskName: currentTaskName || 'no task added'}
+        ] as FinishedTimer[],
+      }
+      updatedStore.finishedTimers = newFinishedTimers
+      window.electron.ipcRenderer.setStoreValue('finishedTimers', newFinishedTimers)
+    }
+
+    setStoreData({...storeData, ...updatedStore })
+    window.electron.ipcRenderer.setStoreValue('lastIntervalType', updatedStore.lastIntervalType)
   }
 
   const handleTimerDone = () => {
@@ -59,28 +89,6 @@ export default function Main() {
       nextIntervalDuration: intervalLenght(nextIntervalType())
     })
     updateFinishedTimersCount()
-  }
-
-  updateFinishedTimersCount = () => {
-    const updatedStore = {
-      lastIntervalType: intervalType
-    }
-
-    if (currentIsWorkInterval()) {
-      const newFinishedCount = storeData.finishedTimers.finishedCount += 1
-      const newFinishedTimers = {
-        currentDate: new Date().toISOString(),
-        timers: [
-          ...(storeData.finishedTimers.timers ? storeData.finishedTimers.timers : []), 
-          { duration: intervalLenght(), taskName: currentTaskName || 'no task added'}
-        ],
-      }
-      updatedStore.finishedTimers = { ...newFinishedTimers }
-      window.electron.ipcRenderer.setStoreValue('finishedTimers', newFinishedTimers)
-    }
-
-    setStoreData({...storeData, ...updatedStore })
-    window.electron.ipcRenderer.setStoreValue('lastIntervalType', updatedStore.lastIntervalType)
   }
 
   return (
@@ -113,4 +121,12 @@ export default function Main() {
       </Center>
     </Flex>
   );
+}
+
+interface UpdateStore {
+  lastIntervalType: IntervalType,
+  finishedTimers?: {
+    currentDate: string,
+    timers: FinishedTimer[]
+  }
 }

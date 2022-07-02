@@ -1,6 +1,7 @@
 import { Text, Box, VStack, Flex } from '@chakra-ui/react'
 import { TimeIcon, RepeatClockIcon } from '@chakra-ui/icons'
 import Card from './Card'
+import { FinishedTimer } from 'main/storeSchema'
 
 export default function Reports({ finishedTimers }: ReportsProps) {
 
@@ -43,13 +44,7 @@ export default function Reports({ finishedTimers }: ReportsProps) {
 }
 
 interface ReportsProps {
-  finishedTimers: Timer[]
-}
-
-interface Timer {
-  taskName: string,
-  timers: number,
-  duration: number
+  finishedTimers: FinishedTimer[]
 }
 
 interface FinishedTasksMetadata {

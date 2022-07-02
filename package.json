@@ -1,6 +1,10 @@
 {
   "license": "MIT",
   "main": "./src/main/main.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Plsr/reportty.git"
+  },
   "scripts": {
     "build": "concurrently \"npm run build:main\" \"npm run build:renderer\"",
     "build:main": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.main.prod.ts",
@@ -135,6 +139,7 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^28.1.0",
     "jest-environment-jsdom": "^28.1.0",
+    "json-schema-to-ts": "^2.5.4",
     "lint-staged": "^12.4.1",
     "mini-css-extract-plugin": "^2.6.0",
     "prettier": "^2.6.2",

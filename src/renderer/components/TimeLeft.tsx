@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Text } from '@chakra-ui/react'
 import { secondsToMinutes } from '../util/timeCalculations'
 
-export default function TimeLeft({ countdownSeconds, onTimerDone }) {
+export default function TimeLeft({ countdownSeconds, onTimerDone }: Props) {
   const [timeLeft, setTimeLeft] = useState(countdownSeconds)
 
   useEffect(() => {
@@ -21,4 +21,9 @@ export default function TimeLeft({ countdownSeconds, onTimerDone }) {
   return (
     <Text fontSize='5xl'>{ secondsToMinutes(timeLeft) }</Text>
   )
+}
+
+interface Props {
+  countdownSeconds: number,
+  onTimerDone(): void
 }

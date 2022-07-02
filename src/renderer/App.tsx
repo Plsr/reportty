@@ -9,7 +9,7 @@ import { ChakraProvider, Box } from '@chakra-ui/react'
 import { StoreContext } from './contexts/storeContext'
 
 function App() {
-  const [storeData, _setStoreData] = useContext(StoreContext)
+  const { storeData } = useContext(StoreContext)
   
   if (!storeData) return <div>Loading....</div>
   return (

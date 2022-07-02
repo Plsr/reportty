@@ -8,9 +8,9 @@ import {
   Input
 } from '@chakra-ui/react'
 
-export default function TimeInputGroup({ value, onValueChange, title }) {
-  const handleValueChange = (value) => {
-    onValueChange(value)
+export default function TimeInputGroup({ value, onValueChange, title }: Props) {
+  const handleValueChange = (value: string | number) => {
+    onValueChange(+value)
   }
 
   return (
@@ -43,4 +43,10 @@ export default function TimeInputGroup({ value, onValueChange, title }) {
       </Slider>
     </>
   )
+}
+
+interface Props {
+  value: number,
+  onValueChange(value: number): void,
+  title: string
 }
