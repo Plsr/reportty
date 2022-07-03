@@ -5,37 +5,42 @@ import {
   SliderThumb,
   Text,
   Box,
-  Input
+  Input,
 } from '@chakra-ui/react'
 
 export default function TimeInputGroup({ value, onValueChange, title }: Props) {
-  const handleValueChange = (value: string | number) => {
-    onValueChange(+value)
+  const handleValueChange = (newValue: string | number) => {
+    onValueChange(+newValue)
   }
 
   return (
     <>
-      <Text fontSize={'m'} fontWeight={'bold'} mb={4}>{ title }</Text>
+      <Text fontSize="m" fontWeight="bold" mb={4}>
+        {title}
+      </Text>
       <Box mb={2}>
         <Input
           display="inline-block"
-          width='auto'
+          width="auto"
           mr={2}
           htmlSize={3}
           value={value}
           onChange={(e) => handleValueChange(e.target.value)}
-        ></Input><Text fontSize="l" display="inline">Minutes</Text>
+        />
+        <Text fontSize="l" display="inline">
+          Minutes
+        </Text>
       </Box>
       <Slider
         min={1}
         max={120}
         step={1}
-        colorScheme='teal'
+        colorScheme="teal"
         value={value}
         defaultValue={value}
-        onChange={(value) => handleValueChange(value)}
+        onChange={(newValue) => handleValueChange(newValue)}
         focusThumbOnChange={false}
-      > 
+      >
         <SliderTrack>
           <SliderFilledTrack />
         </SliderTrack>
@@ -46,7 +51,7 @@ export default function TimeInputGroup({ value, onValueChange, title }: Props) {
 }
 
 interface Props {
-  value: number,
-  onValueChange(value: number): void,
+  value: number
+  onValueChange(value: number): void
   title: string
 }

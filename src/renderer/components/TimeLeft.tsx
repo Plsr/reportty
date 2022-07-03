@@ -18,12 +18,10 @@ export default function TimeLeft({ countdownSeconds, onTimerDone }: Props) {
 
   if (timeLeft <= 0) return null
 
-  return (
-    <Text fontSize='5xl'>{ secondsToMinutes(timeLeft) }</Text>
-  )
+  return <Text fontSize="5xl">{secondsToMinutes(timeLeft)}</Text>
 }
 
 interface Props {
-  countdownSeconds: number,
+  countdownSeconds: number
   onTimerDone(): void
 }

@@ -8,33 +8,33 @@ const breakTimeSchema: JSONSchema7 = {
   type: 'number',
   maximum: 60,
   minimum: 1,
-  default: DEFAULT_BREAK_TIME
+  default: DEFAULT_BREAK_TIME,
 }
 
 const longBreakTimeSchema: JSONSchema7 = {
   type: 'number',
   maximum: 120,
   minimum: 1,
-  default: DEFAULT_LONG_BREAK_TIME
+  default: DEFAULT_LONG_BREAK_TIME,
 }
 
 const workTimeSchema: JSONSchema7 = {
   type: 'number',
   maximum: 120,
   minimum: 1,
-  default: DEFAULT_WORK_TIME
+  default: DEFAULT_WORK_TIME,
 }
 
 const autoStartNextIntervalSchema: JSONSchema7 = {
   type: 'boolean',
-  default: false
+  default: false,
 }
 
 const finishedTimersSchema: JSONSchema7 = {
   type: 'object',
   properties: {
     currentDate: {
-      type: 'string'
+      type: 'string',
     },
     timers: {
       type: 'array',
@@ -45,23 +45,28 @@ const finishedTimersSchema: JSONSchema7 = {
             type: 'number',
           },
           taskName: {
-            type: 'string'
-          }
-        }
-      }
-    }
+            type: 'string',
+          },
+        },
+      },
+    },
   },
   required: ['currentDate'],
 }
 
 const lastIntervalTypeSchema: JSONSchema7 = {
   type: 'string',
-  default: 'work'
+  default: 'work',
 }
 
 export interface FinishedTimer {
-  duration: number,
+  duration: number
   taskName: string
+}
+
+export interface FinishedTimers {
+  currentDate: string
+  timers: FinishedTimer[]
 }
 
 export const storeSchema = {
@@ -70,17 +75,14 @@ export const storeSchema = {
   workTime: workTimeSchema,
   autoStartNextInterval: autoStartNextIntervalSchema,
   finishedTimers: finishedTimersSchema,
-  lastIntervalType: lastIntervalTypeSchema
+  lastIntervalType: lastIntervalTypeSchema,
 } as const
 
 export interface StoreInterface {
-  breakTime: number,
-  longBreakTime: number,
-  workTime: number,
-  autoStartNextInterval: boolean,
-  finishedTimers: {
-    currentDate: Date,
-    timers: FinishedTimer[]
-  },
+  breakTime: number
+  longBreakTime: number
+  workTime: number
+  autoStartNextInterval: boolean
+  finishedTimers: FinishedTimers
   lastIntervalType: 'work' | 'break' | 'longBreak'
 }

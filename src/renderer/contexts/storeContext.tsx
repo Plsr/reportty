@@ -1,14 +1,12 @@
-import { createContext } from 'react'
-import { storeKeys } from '../util/storeKeys'
-import { useState, useEffect } from 'react'
-import { 
-  StoreInterface, 
+import { createContext, useState, useEffect } from 'react'
+import {
+  StoreInterface,
   DEFAULT_BREAK_TIME,
   DEFAULT_LONG_BREAK_TIME,
-  DEFAULT_WORK_TIME 
+  DEFAULT_WORK_TIME,
 } from 'main/storeSchema'
+import { storeKeys } from '../util/storeKeys'
 
-// FIXME: Proper typing
 export type StoreContextType = {
   setStoreData(storeObject: object): void
   storeData: StoreInterface
@@ -20,37 +18,41 @@ const emptyStore: StoreInterface = {
   workTime: DEFAULT_WORK_TIME,
   autoStartNextInterval: false,
   finishedTimers: {
-    currentDate: new Date(),
-    timers: []
+    currentDate: new Date().toISOString(),
+    timers: [],
   },
-  lastIntervalType: 'break'
+  lastIntervalType: 'break',
 }
 
 export const StoreContext = createContext<StoreContextType>({
   setStoreData: () => {},
-  storeData: emptyStore
+  storeData: emptyStore,
 })
-
 export const StoreProvider = ({ children }: Props) => {
   const [storeData, setStoreData] = useState(emptyStore)
 
   useEffect(() => {
     const getStoreData = async () => {
-      Promise.all(storeKeys.map(key => window.electron.ipcRenderer.getStoreValue(key))).then(storeValues => {
-        const storeObj = {} as any// FIXME: Proper tying
-        storeKeys.forEach((key, index) => {
-          storeObj[key] = storeValues[index]
+      Promise.all(
+        storeKeys.map((key) => window.electron.ipcRenderer.getStoreValue(key))
+      )
+        .then((storeValues) => {
+          const keyValueArray = storeValues.map((val, index) => {
+            return { [storeKeys[index]]: val }
+          })
+          const storeObj: StoreInterface = Object.assign({}, ...keyValueArray)
+          setStoreData({ ...(storeObj as StoreInterface) })
+          return null
         })
-        setStoreData({...storeObj as StoreInterface})
-      })
+        .catch((errors) => console.error(errors))
     }
 
     getStoreData()
   }, [])
 
   return (
-    <StoreContext.Provider value={{storeData, setStoreData}} >
-      { children }
+    <StoreContext.Provider value={{ storeData, setStoreData }}>
+      {children}
     </StoreContext.Provider>
   )
 }

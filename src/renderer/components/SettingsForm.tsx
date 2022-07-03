@@ -1,8 +1,8 @@
 import { useContext, useState } from 'react'
-import { Box,Button } from '@chakra-ui/react'
+import { Box, Button } from '@chakra-ui/react'
 import { CheckIcon } from '@chakra-ui/icons'
-import TimeInputGroup from './TimeInputGroup'
 import { StoreContext } from 'renderer/contexts/storeContext'
+import TimeInputGroup from './TimeInputGroup'
 
 export default function SettingsForm({ onSave }: Props) {
   const { storeData } = useContext(StoreContext)
@@ -22,21 +22,33 @@ export default function SettingsForm({ onSave }: Props) {
   return (
     <Box w="100%">
       <Box mb="8">
-        <TimeInputGroup title="Work interval length" value={workTime} onValueChange={(v) => setWorkTime(+v)} />
+        <TimeInputGroup
+          title="Work interval length"
+          value={workTime}
+          onValueChange={(v) => setWorkTime(+v)}
+        />
       </Box>
       <Box mb="8">
-      <TimeInputGroup title="Break length" value={breakTime} onValueChange={(v) => setBreakTime(+v)} />
+        <TimeInputGroup
+          title="Break length"
+          value={breakTime}
+          onValueChange={(v) => setBreakTime(+v)}
+        />
       </Box>
       <Box mb="8">
-        <TimeInputGroup title="Long break length" value={longBreakTime} onValueChange={(v) => setLongBreakTime(+v)} />
+        <TimeInputGroup
+          title="Long break length"
+          value={longBreakTime}
+          onValueChange={(v) => setLongBreakTime(+v)}
+        />
       </Box>
       <Button onClick={handleFormSave} colorScheme="teal" mt={4}>
-        { showButtonSuccessState && (
+        {showButtonSuccessState && (
           <>
-            <CheckIcon w="3" h="3" mr="2"/> Saved
+            <CheckIcon w="3" h="3" mr="2" /> Saved
           </>
-        )} 
-        { !showButtonSuccessState && "Save" }
+        )}
+        {!showButtonSuccessState && 'Save'}
       </Button>
     </Box>
   )
