@@ -6,6 +6,10 @@ export default function TimeLeft({ countdownSeconds, onTimerDone }: Props) {
   const [timeLeft, setTimeLeft] = useState(countdownSeconds)
 
   useEffect(() => {
+    setTimeLeft(countdownSeconds)
+  }, [countdownSeconds])
+
+  useEffect(() => {
     const timer = setTimeout(() => {
       const left = timeLeft - 1
       setTimeLeft(left)
@@ -14,7 +18,7 @@ export default function TimeLeft({ countdownSeconds, onTimerDone }: Props) {
     }, 1000)
 
     return () => clearTimeout(timer)
-  })
+  }, [onTimerDone, timeLeft])
 
   if (timeLeft <= 0) return null
 
