@@ -3,14 +3,13 @@ import {
   Center,
   Button,
   VStack,
-  Text,
   Flex,
   Box,
+  Text,
   Input,
   Tag,
 } from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
-import { add, differenceInSeconds } from 'date-fns'
 import { SettingsIcon } from '@chakra-ui/icons'
 import TimeLeft from '../components/TimeLeft'
 import { INTERVAL_STATES, IntervalType } from '../util/intervalTypes'
@@ -23,8 +22,6 @@ import Card from '../components/Card'
 
 export default function Main() {
   const [timerRunning, setTimerRunning] = useState(false)
-  const [currentTimerEndDate, setCurrentTimerEndDate] = useState<Date>()
-  const [secondsLeft, setSecondsLeft] = useState<number>(0)
   const [intervalType, setIntervalType] = useState<IntervalType>(
     INTERVAL_STATES.work as IntervalType
   )
@@ -36,12 +33,12 @@ export default function Main() {
   }, [storeData]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    window.electron.ipcRenderer.onWindowBecameActive(() => {
-      setSecondsLeft(
-        differenceInSeconds(currentTimerEndDate as Date, new Date())
-      )
+    window.electron.ipcRenderer.onWindowBecameActive((event: Event) => {
+      // TODO: Update timer here
+      // Need to store the timer end date and recalculate once this fires
+      console.log('React knows window became active')
     })
-  }, [currentTimerEndDate])
+  }, [])
 
   // TODO: For later
   const handleNotificationClick = () => {
@@ -51,9 +48,6 @@ export default function Main() {
   const [intervalOverNotification] = useNotification(handleNotificationClick)
 
   const startTimer = () => {
-    const timerEndDate = add(new Date(), { seconds: intervalLenght() })
-    setCurrentTimerEndDate(timerEndDate)
-    setSecondsLeft(differenceInSeconds(timerEndDate, new Date()))
     setTimerRunning(true)
   }
 
@@ -161,7 +155,7 @@ export default function Main() {
           {timerRunning && (
             <VStack>
               <TimeLeft
-                countdownSeconds={secondsLeft}
+                countdownSeconds={intervalLenght()}
                 onTimerDone={handleTimerDone}
               />
               <Button
