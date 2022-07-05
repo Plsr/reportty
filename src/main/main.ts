@@ -77,6 +77,7 @@ const createWindow = async () => {
     height: 728,
     icon: getAssetPath('icon.png'),
     webPreferences: {
+      backgroundThrottling: false,
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
@@ -160,11 +161,6 @@ app
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
       if (mainWindow === null) createWindow()
-    })
-
-    app.on('did-become-active', () => {
-      mainWindow?.webContents.send('window-became-active')
-      console.log('App did become active')
     })
   })
   .catch(console.log)

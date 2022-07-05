@@ -32,14 +32,6 @@ export default function Main() {
     setIntervalType(nextIntervalType(storeData.lastIntervalType))
   }, [storeData]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    window.electron.ipcRenderer.onWindowBecameActive((event: Event) => {
-      // TODO: Update timer here
-      // Need to store the timer end date and recalculate once this fires
-      console.log('React knows window became active')
-    })
-  }, [])
-
   // TODO: For later
   const handleNotificationClick = () => {
     console.log('Handling the thing')

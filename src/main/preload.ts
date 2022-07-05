@@ -15,8 +15,5 @@ contextBridge.exposeInMainWorld('electron', {
     clearStore: () => {
       ipcRenderer.send('clear-store')
     },
-    onWindowBecameActive: (callback: (event: Event) => void) => {
-      ipcRenderer.on('window-became-active', callback as any)
-    },
   },
 })

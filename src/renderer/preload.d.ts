@@ -11,7 +11,6 @@ declare global {
         ): void
         getStoreValue(key: string): Promise<keyof StoreInterface>
         clearStore(): void
-        onWindowBecameActive(callback: (event: Event) => void): void
       }
     }
   }
