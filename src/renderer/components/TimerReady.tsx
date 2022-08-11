@@ -15,14 +15,15 @@ export default function TimerReady({
     onStartButtonClick(currentTaskName)
   }
 
-  const shouldShowInput = intervalType === INTERVAL_STATES.work
+  const isWorkInterval = intervalType === INTERVAL_STATES.work
+  const buttonText = isWorkInterval ? 'Start working' : 'Start break'
 
   return (
     <Card spacious>
       <VStack>
         <Tag colorScheme="blue">{intervalType}</Tag>
         <Text fontSize="5xl">{secondsToMinutes(intervalLength)}</Text>
-        {shouldShowInput && (
+        {isWorkInterval && (
           <Input
             value={currentTaskName}
             onChange={(e) => setCurrentTaskName(e.target.value)}
@@ -36,7 +37,7 @@ export default function TimerReady({
           variant="outline"
           onClick={handleStartButtonClick}
         >
-          Start timer
+          {buttonText}
         </Button>
       </VStack>
     </Card>
