@@ -1,24 +1,14 @@
 import { useState, useContext, useEffect } from 'react'
-import {
-  Center,
-  Button,
-  VStack,
-  Flex,
-  Box,
-  Text,
-  Input,
-  Tag,
-} from '@chakra-ui/react'
+import { Center, Button, VStack, Flex, Box } from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
 import { SettingsIcon } from '@chakra-ui/icons'
+import TimerReady from 'renderer/components/TimerReady'
 import TimeLeft from '../components/TimeLeft'
 import { INTERVAL_STATES, IntervalType } from '../util/intervalTypes'
 import useNotification from '../hooks/useNotificaion'
 import { StoreContext } from '../contexts/storeContext'
-import { secondsToMinutes } from '../util/timeCalculations'
 import { FinishedTimer, FinishedTimers } from '../../main/storeSchema'
 import Reports from '../components/Reports'
-import Card from '../components/Card'
 
 export default function Main() {
   const [timerRunning, setTimerRunning] = useState(false)
@@ -39,7 +29,8 @@ export default function Main() {
 
   const [intervalOverNotification] = useNotification(handleNotificationClick)
 
-  const startTimer = () => {
+  const startTimer = (taskName: string) => {
+    setCurrentTaskName(taskName)
     setTimerRunning(true)
   }
 
@@ -115,34 +106,17 @@ export default function Main() {
     <Flex direction="column" h="100%">
       <Box ml="auto">
         <Link to="/settings">
-          {' '}
           <SettingsIcon w="6" h="6" />
         </Link>
       </Box>
       <Center h="100%">
         <VStack spacing={8}>
           {!timerRunning && (
-            <Card spacious>
-              <VStack>
-                <Tag colorScheme="blue">{intervalType}</Tag>
-                <Text fontSize="5xl">
-                  {secondsToMinutes(intervalLenght(intervalType))}
-                </Text>
-                <Input
-                  value={currentTaskName}
-                  onChange={(e) => setCurrentTaskName(e.target.value)}
-                  placeholder="What are you working on?"
-                />
-                <Button
-                  size="sm"
-                  colorScheme="blue"
-                  variant="outline"
-                  onClick={startTimer}
-                >
-                  Start timer
-                </Button>
-              </VStack>
-            </Card>
+            <TimerReady
+              intervalType={intervalType}
+              intervalLength={intervalLenght(intervalType)}
+              onStartButtonClick={startTimer}
+            />
           )}
           {timerRunning && (
             <VStack>

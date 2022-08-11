@@ -8,6 +8,7 @@ export default function Card({ children, spacious = false }: Props) {
       p={spacious ? 8 : 3}
       borderRadius={8}
       boxShadow="xl"
+      w="350px"
     >
       {children}
     </Box>
