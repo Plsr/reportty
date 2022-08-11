@@ -1,25 +1,19 @@
 import { Text, Box, VStack, Flex } from '@chakra-ui/react'
 import { TimeIcon, RepeatClockIcon } from '@chakra-ui/icons'
 import { FinishedTimer } from 'main/storeSchema'
+import { useMemo } from 'react'
 import { secondsToMinutes } from 'renderer/util/timeCalculations'
+import {
+  getFinishedTimersByTaskName,
+  FinishedTasksMetadata,
+} from 'renderer/util/reports'
 import Card from './Card'
 
 export default function Reports({ finishedTimers }: ReportsProps) {
-  const finishedTimersByTaskName = (): FinishedTasksMetadata => {
-    if (finishedTimers.length < 1) return {}
-    const finishedTasksMetadata: FinishedTasksMetadata = {}
-    finishedTimers.forEach((timer) => {
-      const currentTaskName = timer.taskName
-      const presentData = finishedTasksMetadata[currentTaskName]
-
-      finishedTasksMetadata[currentTaskName] = {
-        totalTime: (presentData?.totalTime || 0) + timer.duration,
-        timersCount: (presentData?.timersCount || 0) + 1,
-      }
-    })
-
-    return finishedTasksMetadata
-  }
+  const finishedTimersByTaskName: FinishedTasksMetadata = useMemo(
+    () => getFinishedTimersByTaskName(finishedTimers),
+    [finishedTimers]
+  )
 
   return (
     <Box width="100%">
@@ -27,7 +21,7 @@ export default function Reports({ finishedTimers }: ReportsProps) {
         <RepeatClockIcon /> Finished Intervals ({finishedTimers.length} total)
       </Text>
       <Flex flexDirection="column" width="100%" mt={4}>
-        {Object.entries(finishedTimersByTaskName()).map(([taskName, data]) => (
+        {Object.entries(finishedTimersByTaskName).map(([taskName, data]) => (
           <Box mb={4} key={taskName}>
             <Card>
               <VStack spacing={0} alignItems="start">
@@ -49,11 +43,4 @@ export default function Reports({ finishedTimers }: ReportsProps) {
 
 interface ReportsProps {
   finishedTimers: FinishedTimer[]
-}
-
-interface FinishedTasksMetadata {
-  [key: string]: {
-    totalTime: number
-    timersCount: number
-  }
 }
