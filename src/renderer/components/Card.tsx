@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import { Box } from '@chakra-ui/react'
 
-export default function Card({ children, spacious = false }: Props) {
+export default function Card({ children, spacious }: Props) {
   return (
     <Box
       backgroundColor="white"
@@ -15,7 +15,11 @@ export default function Card({ children, spacious = false }: Props) {
   )
 }
 
+Card.defaultProps = {
+  spacious: false,
+}
+
 interface Props {
   children: ReactNode
-  spacious: boolean
+  spacious?: boolean
 }

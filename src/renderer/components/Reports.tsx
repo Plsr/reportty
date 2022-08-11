@@ -1,6 +1,7 @@
 import { Text, Box, VStack, Flex } from '@chakra-ui/react'
 import { TimeIcon, RepeatClockIcon } from '@chakra-ui/icons'
 import { FinishedTimer } from 'main/storeSchema'
+import { secondsToMinutes } from 'renderer/util/timeCalculations'
 import Card from './Card'
 
 export default function Reports({ finishedTimers }: ReportsProps) {
@@ -31,7 +32,8 @@ export default function Reports({ finishedTimers }: ReportsProps) {
             <Card>
               <VStack spacing={0} alignItems="start">
                 <Text fontSize="xs" color="gray.500">
-                  <TimeIcon /> {data.timersCount} ({data.totalTime} secs)
+                  <TimeIcon /> {data.timersCount} (
+                  {secondsToMinutes(data.totalTime)} min)
                 </Text>
                 <Text fontSize="md" fontWeight={600}>
                   {taskName}
