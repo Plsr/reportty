@@ -7,7 +7,7 @@ declare global {
         sendNotification(data: Electron.NotificationConstructorOptions): void
         setStoreValue(
           key: string,
-          value: number | string | FinishedTimers
+          value: number | string | FinishedTimers | boolean
         ): void
         getStoreValue(key: string): Promise<keyof StoreInterface>
         clearStore(): void

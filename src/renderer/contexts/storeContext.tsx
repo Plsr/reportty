@@ -4,7 +4,10 @@ import {
   DEFAULT_BREAK_TIME,
   DEFAULT_LONG_BREAK_TIME,
   DEFAULT_WORK_TIME,
+  FinishedTimers,
 } from 'main/storeSchema'
+import { uniqueArray } from 'renderer/util/array'
+import { diff } from 'deep-diff'
 import { storeKeys } from '../util/storeKeys'
 
 export type StoreContextType = {
@@ -29,7 +32,7 @@ export const StoreContext = createContext<StoreContextType>({
   storeData: emptyStore,
 })
 export const StoreProvider = ({ children }: Props) => {
-  const [storeData, setStoreData] = useState(emptyStore)
+  const [storeData, reactSetStoreData] = useState(emptyStore)
 
   useEffect(() => {
     const getStoreData = async () => {
@@ -41,7 +44,7 @@ export const StoreProvider = ({ children }: Props) => {
             return { [storeKeys[index]]: val }
           })
           const storeObj: StoreInterface = Object.assign({}, ...keyValueArray)
-          setStoreData({ ...(storeObj as StoreInterface) })
+          reactSetStoreData({ ...(storeObj as StoreInterface) })
           return null
         })
         .catch((errors) => console.error(errors))
@@ -49,6 +52,33 @@ export const StoreProvider = ({ children }: Props) => {
 
     getStoreData()
   }, [])
+
+  const setStoreData = (store: StoreInterface) => {
+    reactSetStoreData((prevStore: StoreInterface) => {
+      const diffs = diff(prevStore, store)
+
+      if (diffs) {
+        const paths: Array<keyof StoreInterface> = uniqueArray(
+          diffs.map((d) => d.path?.[0]) as Array<keyof StoreInterface>
+        )
+        const keyValuePairs: ElectronKeyValueStore[] = paths.map((path) => ({
+          [path]: store[path],
+        }))
+        updateElectronStore(keyValuePairs)
+      }
+      return store
+    })
+  }
+
+  const updateElectronStore = (keyValuePairs: ElectronKeyValueStore[]) => {
+    keyValuePairs.forEach((keyValuePair) => {
+      const key = Object.keys(keyValuePair)[0]
+      window.electron.ipcRenderer.setStoreValue(
+        key.toString(),
+        keyValuePair[key]
+      )
+    })
+  }
 
   return (
     <StoreContext.Provider value={{ storeData, setStoreData }}>
@@ -59,4 +89,8 @@ export const StoreProvider = ({ children }: Props) => {
 
 interface Props {
   children: React.ReactNode
+}
+
+interface ElectronKeyValueStore {
+  [key: string]: string | number | FinishedTimers | boolean
 }

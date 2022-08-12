@@ -82,17 +82,9 @@ export default function Main() {
         ] as FinishedTimer[],
       }
       updatedStore.finishedTimers = newFinishedTimers
-      window.electron.ipcRenderer.setStoreValue(
-        'finishedTimers',
-        newFinishedTimers
-      )
     }
 
     setStoreData({ ...storeData, ...updatedStore })
-    window.electron.ipcRenderer.setStoreValue(
-      'lastIntervalType',
-      updatedStore.lastIntervalType
-    )
   }
 
   const handleTimerDone = () => {
