@@ -50,7 +50,7 @@ export default function Main() {
   }
 
   const getBreakType = () => {
-    return storeData.finishedTimers.timers?.length % 4 === 0
+    return storeData.finishedTimers?.timers?.length % 4 === 0
       ? INTERVAL_STATES.longBreak
       : INTERVAL_STATES.break
   }
@@ -72,7 +72,7 @@ export default function Main() {
       const newFinishedTimers: FinishedTimers = {
         currentDate: new Date().toISOString(),
         timers: [
-          ...(storeData.finishedTimers.timers
+          ...(storeData.finishedTimers?.timers
             ? storeData.finishedTimers.timers
             : []),
           {

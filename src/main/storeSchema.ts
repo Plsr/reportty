@@ -32,7 +32,6 @@ const autoStartNextIntervalSchema: JSONSchema7 = {
 
 const finishedTimersSchema: JSONSchema7 = {
   type: 'object',
-  default: [],
   properties: {
     currentDate: {
       type: 'string',

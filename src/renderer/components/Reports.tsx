@@ -18,7 +18,7 @@ export default function Reports({ finishedTimers }: ReportsProps) {
   return (
     <Box width="100%">
       <Text color="purple.700" fontSize="md" fontWeight={600}>
-        <RepeatClockIcon /> Finished Intervals ({finishedTimers.length} total)
+        <RepeatClockIcon /> Finished Intervals ({finishedTimers?.length} total)
       </Text>
       <Flex flexDirection="column" width="100%" mt={4}>
         {Object.entries(finishedTimersByTaskName).map(([taskName, data]) => (
