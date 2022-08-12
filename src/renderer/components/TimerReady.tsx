@@ -1,4 +1,4 @@
-import { VStack, Tag, Text, Button, Input } from '@chakra-ui/react'
+import { VStack, Text, Button, Input } from '@chakra-ui/react'
 import { secondsToMinutes } from 'renderer/util/timeCalculations'
 import { useState } from 'react'
 import { IntervalType, INTERVAL_STATES } from 'renderer/util/intervalTypes'
@@ -21,7 +21,7 @@ export default function TimerReady({
 
   return (
     <Card spacious>
-      <VStack>
+      <VStack spacing={3}>
         <IntervalTypeTag intervalType={intervalType} />
         <Text fontSize="5xl">{secondsToMinutes(intervalLength)}</Text>
         {isWorkInterval && (

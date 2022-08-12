@@ -3,6 +3,7 @@ import { Center, Button, VStack, Flex, Box } from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
 import { SettingsIcon } from '@chakra-ui/icons'
 import TimerReady from 'renderer/components/TimerReady'
+import TimerRunning, { AbortReason } from 'renderer/components/TimerRunning'
 import TimeLeft from '../components/TimeLeft'
 import { INTERVAL_STATES, IntervalType } from '../util/intervalTypes'
 import useNotification from '../hooks/useNotificaion'
@@ -34,7 +35,9 @@ export default function Main() {
     setTimerRunning(true)
   }
 
-  const stopTimer = () => {
+  const stopTimer = (reason: AbortReason, timeLeft: number) => {
+    const workTime = intervalLength() - timeLeft
+    if (reason === 'finish') updateFinishedTimersCount(workTime)
     setTimerRunning(false)
     setIntervalType(nextIntervalType())
   }
@@ -53,7 +56,7 @@ export default function Main() {
       : INTERVAL_STATES.break
   }
 
-  const intervalLenght = (interval: IntervalType = intervalType) => {
+  const intervalLength = (interval: IntervalType = intervalType) => {
     return storeData[`${interval}Time`] * 60
   }
 
@@ -61,7 +64,7 @@ export default function Main() {
     return intervalType === INTERVAL_STATES.work
   }
 
-  const updateFinishedTimersCount = () => {
+  const updateFinishedTimersCount = (duration?: number) => {
     const updatedStore: UpdateStore = {
       lastIntervalType: intervalType,
     }
@@ -74,7 +77,7 @@ export default function Main() {
             ? storeData.finishedTimers.timers
             : []),
           {
-            duration: intervalLenght(),
+            duration: duration || intervalLength(),
             taskName: currentTaskName || 'no task added',
           },
         ] as FinishedTimer[],
@@ -97,7 +100,7 @@ export default function Main() {
     setTimerRunning(false)
     intervalOverNotification({
       intervalType,
-      nextIntervalDuration: intervalLenght(nextIntervalType()),
+      nextIntervalDuration: intervalLength(nextIntervalType()),
     })
     updateFinishedTimersCount()
   }
@@ -114,25 +117,17 @@ export default function Main() {
           {!timerRunning && (
             <TimerReady
               intervalType={intervalType}
-              intervalLength={intervalLenght(intervalType)}
+              intervalLength={intervalLength(intervalType)}
               onStartButtonClick={startTimer}
             />
           )}
           {timerRunning && (
-            <VStack>
-              <TimeLeft
-                countdownSeconds={intervalLenght()}
-                onTimerDone={handleTimerDone}
-              />
-              <Button
-                size="sm"
-                colorScheme="red"
-                variant="ghost"
-                onClick={stopTimer}
-              >
-                abort timer
-              </Button>
-            </VStack>
+            <TimerRunning
+              countdownSeconds={intervalLength()}
+              intervalType={intervalType}
+              onTimerDone={handleTimerDone}
+              onStopClick={stopTimer}
+            />
           )}
           {storeData.finishedTimers?.timers?.length > 0 && (
             <Reports finishedTimers={storeData.finishedTimers.timers} />
