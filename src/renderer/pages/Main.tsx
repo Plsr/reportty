@@ -96,6 +96,11 @@ export default function Main() {
     updateFinishedTimersCount()
   }
 
+  const skipInterval = () => {
+    setStoreData({ ...storeData, lastIntervalType: intervalType })
+    setIntervalType(nextIntervalType(intervalType))
+  }
+
   return (
     <Flex direction="column" h="100%">
       <Box ml="auto">
@@ -110,6 +115,7 @@ export default function Main() {
               intervalType={intervalType}
               intervalLength={intervalLength(intervalType)}
               onStartButtonClick={startTimer}
+              onSkipButtonClick={skipInterval}
             />
           )}
           {timerRunning && (
